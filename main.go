@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/imrushi/restapi/helper"
 	"github.com/imrushi/restapi/models"
+	"github.com/imrushi/restapi/util"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -158,6 +159,10 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	config, err := util.LoadConfig("./")
+	if err != nil {
+		log.Fatal("Cannot load Config:", err)
+	}
 	//Init Router
 	r := mux.NewRouter()
 	//arrange our route
@@ -168,6 +173,6 @@ func main() {
 	r.HandleFunc("/api/books/{id}", deleteBook).Methods("DELETE")
 
 	//set out port address
-	log.Fatal(http.ListenAndServe(":8000", r))
-	fmt.Print("Server is running on port 8000")
+	fmt.Print("Server is running on port: " + config.API_PORT)
+	log.Fatal(http.ListenAndServe(":"+config.API_PORT, r))
 }

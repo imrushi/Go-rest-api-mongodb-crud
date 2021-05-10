@@ -7,13 +7,18 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/imrushi/restapi/util"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func ConnectDB() *mongo.Collection {
+	config, err := util.LoadConfig("./")
+	if err != nil {
+		log.Fatal("Cannot load Config:", err)
+	}
 	//set client opetions
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOptions := options.Client().ApplyURI(config.MONGO_URI)
 
 	//connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
@@ -29,7 +34,7 @@ func ConnectDB() *mongo.Collection {
 
 	fmt.Print("Connected to MongoDB!")
 
-	collection := client.Database("go_rest_api").Collection("books")
+	collection := client.Database(config.MONGO_DATABASE).Collection(config.MONGO_COLLECTION)
 
 	return collection
 }
