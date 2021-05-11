@@ -11,6 +11,7 @@ services:
   go_server:
     build: .
     container_name: go_contianer
+    restart: on-failure
     ports:
       - "8000:8080"
     networks:
